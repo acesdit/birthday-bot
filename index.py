@@ -13,8 +13,9 @@ def main():
 
 @app.route("/slack/events", methods=["POST"])
 def slack_events():
-    if request.content_type == "application/json":
-        return {"challenge": request.json["challenge"]}
+    # if request.content_type == "application/json":
+    #     return {"challenge": request.json["challenge"]}
+    # slack sends a challenge token to this endpoint, and only then does it consider it as a legit request url
     return req_handler.handle(request)
 
 

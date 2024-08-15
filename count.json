@@ -3,8 +3,8 @@
     "SE-B": false,
     "SE-C": false,
     "SE-D": false,
-    "TE-A": true,
-    "TE-B": true,
-    "TE-C": true,
+    "TE-A": false,
+    "TE-B": false,
+    "TE-C": false,
     "TE-D": false
 }
