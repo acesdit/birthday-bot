@@ -97,6 +97,6 @@ def slack_events():
     return handler.handle(request)
 
 
-if __name__ == "__main__":
+def main():
     # SocketModeHandler(app, os.getenv("SLACK_APP_TOKEN")).start()
-    app.run(port=5000,host="localhost")
+    app.run(port=5000, host="localhost")
