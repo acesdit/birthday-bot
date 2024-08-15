@@ -89,18 +89,4 @@ def handle_message_events(body, logger):
 # Start your app
 
 
-app = Flask(__name__)
-handler = SlackRequestHandler(slack_app)
 
-
-@app.route("/slack/events", methods=["POST"])
-def slack_events():
-    if request.content_type == "application/json":
-        return {"challenge": request.json["challenge"]}
-    return handler.handle(request)
-
-
-def main():
-    # SocketModeHandler(app, os.getenv("SLACK_APP_TOKEN")).start()
-    # app.run(port=5000, host="localhost") # for dev mode
-    serve(app, host="0.0.0.0", port=5000)
