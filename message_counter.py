@@ -8,17 +8,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initializes your app with your bot token and socket mode handler
-app = App(
+slack_app = App(
     token=os.getenv("SLACK_BOT_TOK"),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET") # not required for socket mode
 )
-status="Incomplete"
+status = "Incomplete"
 with open("count.json", "r") as f:
     new = dict(json.load(f))
 checker = [i for i in list(new.values()) if i == True]
 status = "Incomplete" if len(checker) != len(new) else "Complete"
 # Listens to incoming messages that contain "hello"
-@app.message("hello")
+
+
+@slack_app.message("hello")
 def message_hello(message, say):
     # say() sends a message to the channel where the event was triggered
     say(
@@ -35,11 +37,13 @@ def message_hello(message, say):
         ],
         text=f"Hey there <@{message['user']}>!"
     )
-@app.message(r'^(sa|sb|sc|sd|ta|tb|tc|td)$')
+
+
+@slack_app.message(r'^(sa|sb|sc|sd|ta|tb|tc|td)$')
 def update_status(message, say):
     # say() sends a message to the channel where the event was triggered
     t = list(message["text"].upper())
-    t.insert(1,"E-") #ta to TE-A
+    t.insert(1,"E-")  # ta to TE-A
     div = "".join(t)
     if new[div] is not True:
         new[div] = True
@@ -64,31 +68,35 @@ def update_status(message, say):
     )
 
 
-@app.action("button_click")
+@slack_app.action("button_click")
 def action_button_click(body, ack, say):
     # Acknowledge the action
     ack()
     say(f"<@{body['user']['id']}> clicked the button")
 
-@app.command("/check")
+
+@slack_app.command("/check")
 def get_status(ack, say, command):
     # Acknowledge command request
     ack()
     say(f"Status:\n\n{new}\n\n{status}")
 
-@app.event("message")
+
+@slack_app.event("message")
 def handle_message_events(body, logger):
     logger.info(body)
-
-
 # Start your app
-flask_app = Flask(__name__)
-handler = SlackRequestHandler(app)
 
 
-@flask_app.route("/slack/events", methods=["POST"])
+app = Flask(__name__)
+handler = SlackRequestHandler(slack_app)
+
+
+@app.route("/slack/events", methods=["POST"])
 def slack_events():
     return handler.handle(request)
+
+
 if __name__ == "__main__":
-#     SocketModeHandler(app, os.getenv("SLACK_APP_TOKEN")).start()
-    flask_app.run(port=5000,host="localhost")
+    # SocketModeHandler(app, os.getenv("SLACK_APP_TOKEN")).start()
+    app.run(port=5000,host="localhost")
