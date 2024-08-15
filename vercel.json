@@ -9,7 +9,7 @@
   "routes": [
   {
     "src": "/(.*)",
-    "dest": "/message_counter.py"
+    "dest": "message_counter.py"
   }
   ]
 }
