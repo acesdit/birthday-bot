@@ -1,0 +1,1 @@
+from message_counter import flask_app
