@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "builds": [
+  {
+    "src": "./message_counter.py",
+    "use": "@vercel/python"
+  }
+  ],
+  "routes": [
+  {
+    "src": "/(.*)",
+    "dest": "/message_counter.py"
+  }
+  ]
+}
