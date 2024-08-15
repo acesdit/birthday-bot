@@ -5,6 +5,7 @@ from slack_bolt.adapter.flask import SlackRequestHandler
 from flask import Flask, request, jsonify
 import json
 from dotenv import load_dotenv
+from waitress import serve
 load_dotenv()
 
 # Initializes your app with your bot token and socket mode handler
@@ -99,4 +100,5 @@ def slack_events():
 
 def main():
     # SocketModeHandler(app, os.getenv("SLACK_APP_TOKEN")).start()
-    app.run(port=5000, host="localhost")
+    # app.run(port=5000, host="localhost") # for dev mode
+    serve(app, host="0.0.0.0", port=5000)
