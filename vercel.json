@@ -8,8 +8,12 @@
   ],
   "routes": [
   {
+    "src": "/slack/events",
+    "dest": "/index.py"
+  },
+  {
     "src": "/(.*)",
-    "dest": "/slack/events"
+    "dest": "/index.py"
   }
   ]
 }
