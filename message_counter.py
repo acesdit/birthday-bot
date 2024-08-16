@@ -1,7 +1,9 @@
 import os
 from slack_bolt import App
 from add_to_google_sheets import append_to_sheet, get_values
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 # Initializes your app with your bot token and socket mode handler
 slack_app = App(
     token=os.getenv("SLACK_BOT_TOK"),
@@ -68,3 +70,10 @@ def get_status(ack, say, command):
 @slack_app.event("message")
 def handle_message_events(body, logger):
     logger.info(body)
+
+
+@slack_app.middleware  # or app.use(log_request)
+def log_request(logger, body, next):
+    logger.debug(body)
+    return next()
+
