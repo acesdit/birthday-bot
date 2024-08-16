@@ -51,5 +51,5 @@ def slack_events():
 
 if __name__ == "__main__":
     # SocketModeHandler(app, os.getenv("SLACK_APP_TOKEN")).start()
-    # app.run(port=5000, host="localhost") # for dev mode
-    serve(app, host="0.0.0.0", port=5000)
+    app.run(port=5000, host="localhost") # for dev mode
+    # serve(app, host="0.0.0.0", port=5000)
