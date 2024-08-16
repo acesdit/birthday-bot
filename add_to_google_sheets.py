@@ -17,7 +17,7 @@ keys = [
     "client_x509_cert_url",
     "universe_domain"
 ]
-cred = {key: os.getenv(key).replace("\\n", "\n") for key in keys}
+cred = {key: os.getenv(key).replace('\\n', '\n') for key in keys}
 gc = gspread.service_account_from_dict(cred)
 sheet = gc.open_by_key(os.getenv("s_url")).sheet1
 

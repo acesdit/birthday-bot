@@ -1,8 +1,38 @@
 from flask import Flask, request, jsonify
 from slack_bolt.adapter.flask import SlackRequestHandler
-from message_counter import slack_app
+# from message_counter import slack_app
 from waitress import serve
+from slack_bolt import App
+import os
+
+slack_app = App(
+    token=os.getenv("SLACK_BOT_TOK"),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET") # not required for socket mode
+)
+
+
+# Listens to incoming messages that contain "hello"
+@slack_app.message("hello")
+def message_hello(message, say):
+    # say() sends a message to the channel where the event was triggered
+    say(
+        blocks=[
+            {
+                "type": "section",
+                "text": {"type": "mrkdwn", "text": f"Hey there <@{message['user']}>!"},
+                "accessory": {
+                    "type": "button",
+                    "text": {"type": "plain_text", "text": "Click Me"},
+                    "action_id": "button_click"
+                }
+            }
+        ],
+        text=f"Hey there <@{message['user']}>!"
+    )
+
+
 app = Flask(__name__)
+
 req_handler = SlackRequestHandler(slack_app)
 
 
