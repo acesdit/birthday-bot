@@ -19,10 +19,10 @@ keys = [
 ]
 cred = {key: os.getenv(key).replace('\\n', '\n') for key in keys}
 gc = gspread.service_account_from_dict(cred)
-sheet = gc.open_by_key(os.getenv("s_url")).sheet1
 
 
 def get_values():
+    sheet = gc.open_by_key(os.getenv("s_url")).sheet1
     status = False
     all_classes = [row[1] for row in sheet.get_all_values() if row[1] == "TRUE"]
     if len(all_classes) == 8:  # num of divs from SE-A to TE-D
@@ -31,6 +31,7 @@ def get_values():
 
 
 def append_to_sheet(div):
+    sheet = gc.open_by_key(os.getenv("s_url")).sheet1
     status, values = get_values()
 
     if status:
