@@ -9,7 +9,7 @@
   "routes": [
   {
     "src": "/slack/events",
-    "dest": "/message_counter.py"
+    "dest": "/index.py"
   },
   {
     "src": "/(.*)",
