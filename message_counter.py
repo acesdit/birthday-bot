@@ -1,21 +1,17 @@
 import os
 from slack_bolt import App
 from add_to_google_sheets import append_to_sheet, get_values
-from index import app
-from slack_bolt.adapter.flask import SlackRequestHandler
-from flask import Flask, request, jsonify
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 # Initializes your app with your bot token and socket mode handler
 slack_app = App(
     token=os.getenv("SLACK_BOT_TOK"),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET") # not required for socket mode
 )
-req_handler = SlackRequestHandler(slack_app)
 
 
 # Listens to incoming messages that contain "hello"
-
-
 @slack_app.message("hello")
 def message_hello(message, say):
     # say() sends a message to the channel where the event was triggered
@@ -81,11 +77,3 @@ def log_request(logger, body, next):
     logger.debug(body)
     return next()
 
-
-@app.route("/slack/events", methods=["POST"])
-def slack_events():
-
-    # if request.content_type == "application/json":
-    #     return {"challenge": request.json["challenge"]}
-    # slack sends a challenge token to this endpoint, and only then does it consider it as a legit request url
-    return req_handler.handle(request)
