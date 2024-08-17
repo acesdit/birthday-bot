@@ -67,13 +67,20 @@ def get_status(ack, say, command):
     say(f"Status:\n\n{values}\n\n{status}")
 
 
-@slack_app.event("message")
-def handle_message_events(body, logger):
-    logger.info(body)
+@slack_app.event("app_mention")
+def get_status(ack, say, command):
+    # Acknowledge command request
+    ack()
+    values, status = get_values()
+    say(f"Status:\n\n{values}\n\n{status}")
 
-
-@slack_app.middleware  # or app.use(log_request)
-def log_request(logger, body, next):
-    logger.debug(body)
-    return next()
+# @slack_app.event("message")
+# def handle_message_events(body, logger):
+#     logger.info(body)
+#
+#
+# @slack_app.middleware  # or app.use(log_request)
+# def log_request(logger, body, next):
+#     logger.debug(body)
+#     return next()
 
