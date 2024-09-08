@@ -1,4 +1,5 @@
 .idea
 .venv
 .env
-acesdit-slackbot.json
+__pycache__
+.devcontainer

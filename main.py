@@ -1,0 +1,50 @@
+import os
+from slack_bolt import App
+from get_birthdays import get_values
+import google.generativeai as genai
+
+# Initializes your app with your bot token and socket mode handler
+slack_app = App(
+    token=os.getenv("SLACK_BOT_TOK"),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET")  # not required for socket mode
+)
+genai.configure(api_key=os.getenv("gemini"))
+
+channel_id = os.getenv("c_id")
+model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+
+
+def get_prompt() -> str:
+    names = get_values()
+    return f"""
+        haiku with the following name(s)
+        {names}
+         
+        the main message of haiku is a birthday message
+        
+        Proper 5-7-5 haiku format
+        eg:
+        prompt: haiku with the name sahil in it
+        the main message of haiku is a birthday message:
+        
+        respond in the format:
+        
+        Sahil, guide on shore,
+        Happy birthday, leader bright,
+        May your path be clear.
+        
+        One haiku for each name                                                                                               
+        Followed by the definition of haiku in a line 
+        Followed by a birthday wish to the person in a line
+         """
+
+
+response = model.generate_content(get_prompt()).text
+try:
+    response = slack_app.client.chat_postMessage(
+        channel=channel_id,  # Channel ID or user ID to send a message to
+        text=response,  # Text of the message
+        icon_emoji=":sparkles:")
+    print(f"Message sent to {channel_id}: {response['message']['text']}")
+except Exception as e:
+    print(f"Error sending message: {e}")
