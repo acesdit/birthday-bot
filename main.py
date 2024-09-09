@@ -16,35 +16,49 @@ model = genai.GenerativeModel(model_name="gemini-1.5-flash")
 
 def get_prompt() -> str:
     names = get_values()
-    return f"""
-        haiku with the following name(s)
-        {names}
-         
-        the main message of haiku is a birthday message
-        
-        Proper 5-7-5 haiku format
-        eg:
-        prompt: haiku with the name sahil in it
-        the main message of haiku is a birthday message:
-        
-        respond in the format:
-        
-        Sahil, guide on shore,
-        Happy birthday, leader bright,
-        May your path be clear.
-        
-        One haiku for each name                                                                                               
-        Followed by the definition of haiku in a line 
-        Followed by a birthday wish to the person in a line
+    if len(names) > 0:  # Ensure there are birthdays to process
+        prompt = f"""
+            haiku with the following name(s)
+            {names}
+
+            the main message of haiku is a birthday message
+
+            Proper 5-7-5 haiku format
+            eg:
+            prompt: haiku with the name sahil in it
+            the main message of haiku is a birthday message:
+
+            respond in the format:
+
+            Sahil, guide on shore,
+            Happy birthday, leader bright,
+            May your path be clear.
+
+            One haiku for each name
+            Followed by the definition of haiku in a line
+            Followed by a birthday wish to the person in a line
          """
+        try:
+            response = model.generate_content(prompt).text
+            return response
+        except Exception as e:
+            print(f"Error generating content: {e}")
+            return "no"  # Return "no" if there's an error with API call
+    return "no"
 
 
-response = model.generate_content(get_prompt()).text
-try:
-    response = slack_app.client.chat_postMessage(
-        channel=channel_id,  # Channel ID or user ID to send a message to
-        text=response,  # Text of the message
-        icon_emoji=":sparkles:")
-    print(f"Message sent to {channel_id}: {response['message']['text']}")
-except Exception as e:
-    print(f"Error sending message: {e}")
+# Generate the prompt and post to Slack if there are birthdays
+response_text = get_prompt()
+
+if response_text != "no":
+    try:
+        response = slack_app.client.chat_postMessage(
+            channel=channel_id,  # Channel ID or user ID to send a message to
+            text=response_text,  # Text of the message
+            icon_emoji=":sparkles:"
+        )
+        print(f"Message sent to {channel_id}: {response['message']['text']}")
+    except Exception as e:
+        print(f"Error sending message: {e}")
+else:
+    print("No birthdays today. No message sent.")
