@@ -55,7 +55,7 @@ if response_text != "no":
         response = slack_app.client.chat_postMessage(
             channel=channel_id,  # Channel ID or user ID to send a message to
             text=response_text,  # Text of the message
-            icon_emoji=":sparkles:"
+
         )
         print(f"Message sent to {channel_id}: {response['message']['text']}")
     except Exception as e:
