@@ -54,7 +54,7 @@ if response_text != "no":
     try:
         response = slack_app.client.chat_postMessage(
             channel=channel_id,  # Channel ID or user ID to send a message to
-            text=response_text,  # Text of the message
+            text=f" {response_text} <@{user_id}>",  # Text of the message
 
         )
         print(f"Message sent to {channel_id}: {response['message']['text']}")
