@@ -14,12 +14,24 @@ channel_id = os.getenv("c_id")
 model = genai.GenerativeModel(model_name="gemini-1.5-flash")
 
 
+def get_id(name):
+    users_list = slack_app.client.users_list()["members"]
+
+    user_dict = {user["id"]: user["profile"]["real_name"] for user in users_list}
+    for user in user_dict:
+        if user_dict[user] == name:
+            return user  # returns id
+
+
 def get_prompt() -> str:
     names = get_values()
+    first_names = [name.split(" ")[0] for name in names]
+
     if len(names) > 0:  # Ensure there are birthdays to process
         prompt = f"""
-            haiku with the following name(s)
-            {names}
+            
+            haiku with the following name(s):
+            {first_names}
 
             the main message of haiku is a birthday message
 
@@ -29,16 +41,17 @@ def get_prompt() -> str:
             the main message of haiku is a birthday message:
 
             respond in the format:
-
+            
             Sahil, guide on shore,
             Happy birthday, leader bright,
             May your path be clear.
 
             One haiku for each name
             Followed by the definition of haiku in a line
-            Followed by a birthday wish to the person in a line
+                    
          """
         try:
+
             response = model.generate_content(prompt).text
             return response
         except Exception as e:

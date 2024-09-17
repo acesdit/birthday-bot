@@ -28,7 +28,7 @@ def get_values():
     today = datetime.now()
     date_string = today.strftime("%d/%m")
     sheet = gc.open_by_key(os.getenv("s_url")).sheet1
-    birthdays = [row[0] for row in sheet.get_all_values() if row[1] == date_string]
+    birthdays = [row[0] for row in sheet.get_all_values() if row[1] == date_string]  # return names
     return birthdays
 
 
