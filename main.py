@@ -2,6 +2,7 @@ import os
 from slack_bolt import App
 from get_birthdays import get_values
 import google.generativeai as genai
+from typing import Tuple
 
 # Initializes your app with your bot token and socket mode handler
 slack_app = App(
@@ -22,8 +23,7 @@ def get_id(name):
         if user_dict[user] == name:
             return user  # returns id
 
-
-def get_prompt() -> str:
+def get_prompt() -> Tuple[str, str]:
     names = get_values()
     first_names = [name.split(" ")[0] for name in names]
 
@@ -53,21 +53,27 @@ def get_prompt() -> str:
         try:
 
             response = model.generate_content(prompt).text
-            return response
+            return response, names # return the response as well as the names
         except Exception as e:
             print(f"Error generating content: {e}")
-            return "no"  # Return "no" if there's an error with API call
-    return "no"
+            return "no", None  # Return "no" if there's an error with API call
+    return "no", None
 
 
 # Generate the prompt and post to Slack if there are birthdays
-response_text = get_prompt()
+response_text, names = get_prompt()
 
 if response_text != "no":
     try:
+        bday_people_ids = ""
+        for name in names:
+            # retrieve id from a given person's name
+            person_id = get_id(name)
+            # use the <@user_id> format to mention the person
+            bday_people_ids += f"<@{person_id}> "
         response = slack_app.client.chat_postMessage(
             channel=channel_id,  # Channel ID or user ID to send a message to
-            text=response_text,  # Text of the message
+            text=f"{response_text} {bday_people_ids}",  # Text of the message with mentions
 
         )
         print(f"Message sent to {channel_id}: {response['message']['text']}")
