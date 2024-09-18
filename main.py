@@ -2,7 +2,7 @@ import os
 from slack_bolt import App
 from get_birthdays import get_values
 import google.generativeai as genai
-from typing import Tuple
+from typing import Tuple, List
 
 # Initializes your app with your bot token and socket mode handler
 slack_app = App(
