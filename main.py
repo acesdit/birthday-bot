@@ -23,7 +23,7 @@ def get_id(name):
         if user_dict[user] == name:
             return user  # returns id
 
-def get_prompt() -> Tuple[str, str]:
+def get_prompt() -> Tuple[str, List[str]]:
     names = get_values()
     first_names = [name.split(" ")[0] for name in names]
 
